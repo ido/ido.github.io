@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Play It Back</title>
+<meta name="description" content="A generative, code-rendered music video with word-synced karaoke typography. Every frame is a function of song time.">
+<style>
+  @font-face { font-family: "Space Grotesk"; font-weight: 700; font-display: block; src: url(fonts/space-grotesk-700.woff2) format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 500; font-display: block; src: url(fonts/jetbrains-mono-500.woff2) format("woff2"); }
+  :root { --bg: #07060f; --fg: #e8e6f4; --dim: #8a87a3; --line: #24213a; --accent: #9d86ff; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 14px/1.5 "JetBrains Mono", ui-monospace, monospace; }
+  main { max-width: 1280px; margin: 0 auto; padding: 16px; }
+  canvas { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; background: #000; border-radius: 6px; }
+  .bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 12px; }
+  #scrub { flex: 1 1 100%; accent-color: var(--accent); margin: 10px 0 2px; }
+  button, select { font: inherit; color: var(--fg); background: #15132a; border: 1px solid var(--line); border-radius: 4px; padding: 6px 12px; cursor: pointer; }
+  button:hover:not(:disabled) { border-color: var(--accent); }
+  button:disabled { opacity: .4; cursor: default; }
+  #play { min-width: 80px; }
+  #time { color: var(--dim); font-variant-numeric: tabular-nums; margin-right: auto; }
+  #status { color: var(--dim); }
+  progress { width: 160px; accent-color: var(--accent); }
+  body.exporting #play, body.exporting #scrub, body.exporting #res, body.exporting #fps { pointer-events: none; opacity: .4; }
+  p { color: var(--dim); max-width: 72ch; }
+  kbd { border: 1px solid var(--line); border-radius: 3px; padding: 0 4px; }
+</style>
+</head>
+<body>
+<main>
+  <canvas id="stage" width="1280" height="720"></canvas>
+  <input id="scrub" type="range" min="0" max="1" step="0.001" value="0" aria-label="Song position">
+  <div class="bar">
+    <button id="play" data-needs-audio disabled>Play</button>
+    <span id="time">0:00.00</span>
+    <select id="res" aria-label="Resolution"><option value="360">640×360</option><option value="720" selected>1280×720</option><option value="1080">1920×1080</option></select>
+    <select id="fps" aria-label="Frame rate"><option>24</option><option selected>30</option><option>60</option></select>
+    <button id="export" disabled>Export WebM</button>
+    <button id="wav" data-needs-audio disabled>WAV</button>
+    <button id="png" data-needs-audio disabled>PNG frame</button>
+  </div>
+  <div class="bar"><progress id="progress" value="0"></progress><span id="status">Loading…</span></div>
+  <p>Music, visuals and lyric timing are all computed from one score in <code>song.js</code>.
+  The renderer is a pure function of song time, so playback, scrubbing and the frame-stepped export draw identical pixels.
+  <kbd>Space</kbd> play/pause · <kbd>←</kbd>/<kbd>→</kbd> ±2 s · <kbd>Shift</kbd>+arrows ±1 frame.</p>
+</main>
+<script type="module" src="main.js"></script>
+</body>
+</html>

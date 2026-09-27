@@ -1,0 +1,12 @@
+{
+  "name": "play-it-back-tools",
+  "private": true,
+  "description": "Headless export and determinism checks for mv/",
+  "scripts": {
+    "export": "node export.cjs",
+    "verify": "node verify.cjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.56.0"
+  }
+}
